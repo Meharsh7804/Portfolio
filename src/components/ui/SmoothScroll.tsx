@@ -28,9 +28,9 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (lenisRef.current) {
       if (isChaos) {
-        lenisRef.current.stop();
+        (lenisRef.current as any).stop();
       } else {
-        lenisRef.current.start();
+        (lenisRef.current as any).start();
       }
     }
   }, [isChaos]);
