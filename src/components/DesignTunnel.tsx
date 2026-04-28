@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
 import Image from 'next/image';
 import { BsX, BsArrowsAngleExpand } from 'react-icons/bs';
 
@@ -79,11 +79,11 @@ export default function DesignTunnel() {
         
         {/* The Tunnel Contents */}
         <motion.div 
-          style={{ 
+          animate={{ 
             x: mousePos.x, 
             y: mousePos.y,
-            transition: { type: 'spring', stiffness: 20, damping: 10 }
           }}
+          transition={{ type: 'spring', stiffness: 20, damping: 10 }}
           className="relative w-full h-full flex items-center justify-center pointer-events-none"
         >
           {DESIGNS.map((design, index) => (
@@ -165,7 +165,7 @@ function DesignCard({ design, index, total, scrollProgress, onSelect }: {
   design: any, 
   index: number, 
   total: number, 
-  scrollProgress: any,
+  scrollProgress: MotionValue<number>,
   onSelect: () => void
 }) {
   // Each card covers a range of the scroll progress
@@ -192,8 +192,8 @@ function DesignCard({ design, index, total, scrollProgress, onSelect }: {
         z, 
         opacity, 
         scale,
-        filter: useTransform(blur, (v) => `blur(${v}px)`),
-        pointerEvents: useTransform(scrollProgress, (v) => v >= start && v <= end ? 'auto' : 'none')
+        filter: useTransform(blur, (v: number) => `blur(${v}px)`),
+        pointerEvents: useTransform(scrollProgress, (v: number) => v >= start && v <= end ? 'auto' : 'none')
       }}
       className="absolute w-[80vw] md:w-[60vw] max-w-[1200px] aspect-video z-10 cursor-pointer group"
       onClick={onSelect}
