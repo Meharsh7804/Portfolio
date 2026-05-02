@@ -270,10 +270,10 @@ export default function Terminal() {
       
       {/* Section Header */}
       <div className="mb-16 text-center">
-        <span className="text-[10px] md:text-xs uppercase tracking-[0.6em] text-white/30 block mb-4 font-mono">
+        <span className="text-xs uppercase tracking-[0.6em] text-amber-500 mb-4 block font-bold font-sans drop-shadow-lg">
           Interactive Shell
         </span>
-        <h2 className="text-3xl md:text-5xl font-light text-white tracking-widest uppercase">
+        <h2 className="movie-title text-5xl md:text-7xl text-white tracking-widest uppercase drop-shadow-2xl">
           Command <span className="text-amber-500 font-bold">Center</span>
         </h2>
       </div>
@@ -352,7 +352,7 @@ export default function Terminal() {
         </div>
 
         {/* RIGHT PANEL: Terminal Window */}
-        <div className={`lg:col-span-8 flex flex-col rounded-lg border shadow-2xl overflow-hidden font-mono text-sm transition-all duration-500 ${isChaos ? 'bg-[#0a0000] border-red-500/30 shadow-[0_0_50px_rgba(255,0,0,0.1)]' : 'bg-[#050505] border-white/10'}`}>
+        <div className={`lg:col-span-8 flex flex-col rounded-lg border shadow-2xl overflow-hidden font-mono text-sm transition-all duration-500 h-[60vh] lg:h-full ${isChaos ? 'bg-[#0a0000] border-red-500/30 shadow-[0_0_50px_rgba(255,0,0,0.1)]' : 'bg-[#050505] border-white/10'}`}>
           
           {/* Terminal Header */}
           <div className={`flex items-center px-4 py-3 border-b sticky top-0 z-10 ${isChaos ? 'bg-red-950/20 border-red-500/20' : 'bg-[#0a0a0a] border-white/10'}`}>

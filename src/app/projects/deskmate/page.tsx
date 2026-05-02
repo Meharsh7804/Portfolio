@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { BsClock, BsCpu, BsLightning, BsGithub } from 'react-icons/bs';
 
 const QUESTIONS = [
   "Bhai HOD ma’am kaha hai?",
@@ -66,6 +67,13 @@ const Stickman = ({ animation }: { animation: 'idle' | 'chaos' | 'shrug' }) => {
 export default function DeskMateProject() {
   const [phase, setPhase] = useState<'intro' | 'flood' | 'freeze' | 'realization' | 'transformation' | 'details'>('intro');
   const [visibleCount, setVisibleCount] = useState(0);
+  const [showNotification, setShowNotification] = useState(false);
+  const skippedRef = useRef(false);
+
+  const skipStory = () => {
+    skippedRef.current = true;
+    setPhase('details');
+  };
 
   // Story Sequencing
   useEffect(() => {
@@ -76,15 +84,17 @@ export default function DeskMateProject() {
     
     // Phase 2: Systematic Flood (Accelerated)
     setTimeout(() => {
+      if (skippedRef.current) return;
       setPhase('flood');
       
       const revealNext = (index: number) => {
+        if (skippedRef.current) return;
         if (index >= QUESTIONS.length) {
           // Chaos ends -> Freeze
-          setTimeout(() => setPhase('freeze'), 1000);
-          setTimeout(() => setPhase('realization'), 2000);
-          setTimeout(() => setPhase('transformation'), 4000);
-          setTimeout(() => setPhase('details'), 5500);
+          setTimeout(() => { if (!skippedRef.current) setPhase('freeze'); }, 1000);
+          setTimeout(() => { if (!skippedRef.current) setPhase('realization'); }, 2000);
+          setTimeout(() => { if (!skippedRef.current) setPhase('transformation'); }, 4000);
+          setTimeout(() => { if (!skippedRef.current) setPhase('details'); }, 5500);
           return;
         }
 
@@ -115,6 +125,17 @@ export default function DeskMateProject() {
           >
             {/* Background Decor */}
             <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '100px 100px' }} />
+
+            {/* Skip Story Button */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2 }}
+              onClick={skipStory}
+              className="absolute bottom-8 right-8 z-[60] px-6 py-2.5 border border-white/10 bg-white/[0.03] backdrop-blur-md text-[9px] uppercase tracking-[0.5em] text-white/30 hover:text-white hover:border-white/30 transition-all duration-500 rounded-full"
+            >
+              Skip Story →
+            </motion.button>
 
             {/* Stickman Center (STATIONARY) */}
             <div className="relative flex flex-col items-center gap-12 z-20">
@@ -223,7 +244,7 @@ export default function DeskMateProject() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3 }}
                 className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-6"
               >
-                <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase">The Breakdown</span>
+                <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase">Scroll to Explore</span>
                 <div className="w-[1px] h-20 bg-gradient-to-b from-amber-500 to-transparent" />
               </motion.div>
             </div>
@@ -233,15 +254,15 @@ export default function DeskMateProject() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
                 <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-12">
                   <div className="inline-block px-6 py-2 border border-red-500/20 bg-red-500/5 rounded-full">
-                    <span className="text-[10px] uppercase tracking-[0.6em] text-red-500 font-bold">The Chaos</span>
+                    <span className="text-[10px] uppercase tracking-[0.6em] text-red-500 font-bold">The Problem</span>
                   </div>
-                  <h2 className="text-4xl md:text-7xl font-serif italic text-white/90 leading-[1.1]">The CR's logistical nightmare.</h2>
+                  <h2 className="text-4xl md:text-7xl font-serif italic text-white/90 leading-[1.1]">The CR's nightmare.</h2>
                   <p className="text-white/40 leading-loose font-mono text-xs uppercase tracking-[0.2em]">Repeatedly answering the same queries for 60+ students manually was impossible to scale. The information existed, but it was trapped in static PDFs or professor's emails.</p>
                 </motion.div>
 
                 <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-12">
                   <div className="inline-block px-6 py-2 border border-amber-500/20 bg-amber-500/5 rounded-full">
-                    <span className="text-[10px] uppercase tracking-[0.6em] text-amber-500 font-bold">The Order</span>
+                    <span className="text-[10px] uppercase tracking-[0.6em] text-amber-500 font-bold">The Solution</span>
                   </div>
                   <h2 className="text-4xl md:text-7xl font-serif italic text-white/90 leading-[1.1]">An automated intelligence node.</h2>
                   <p className="text-white/40 leading-loose font-mono text-xs uppercase tracking-[0.2em]">DeskMate centralizes department data and uses NLP logic to provide verified, instant answers to anyone, anytime.</p>
@@ -249,16 +270,21 @@ export default function DeskMateProject() {
               </div>
 
               {/* Functional Highlights */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 {[
-                  { title: "INTEGRATED FLOW", desc: "Live professor availability and classroom shifts.", icon: "🕒" },
-                  { title: "AI RESOLVER", desc: "Understands natural language academic queries.", icon: "🧠" },
-                  { title: "SCALABLE ANSWERS", desc: "One knowledge base serving hundreds of students.", icon: "🚀" }
+                  { title: "INTEGRATED FLOW", desc: "Live professor availability and classroom shifts.", icon: "⏱️" },
+                  { title: "AI RESOLVER", desc: "Understands natural language academic queries.", icon: "🤖" },
+                  { title: "SCALABLE ANSWERS", desc: "One knowledge base serving hundreds of students.", icon: "⚡" }
                 ].map((feat, i) => (
-                  <motion.div key={feat.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.2 }} className="p-16 border border-white/5 bg-white/[0.01] backdrop-blur-3xl hover:border-amber-500/20 transition-all rounded-sm group">
-                    <div className="text-6xl mb-10 group-hover:scale-125 transition-transform duration-500">{feat.icon}</div>
-                    <h3 className="text-sm font-bold tracking-[0.5em] uppercase mb-8 text-white/80">{feat.title}</h3>
-                    <p className="text-[11px] leading-loose text-white/30 uppercase tracking-[0.1em]">{feat.desc}</p>
+                  <motion.div key={feat.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.2 }} className="p-12 border border-white/5 bg-white/[0.01] backdrop-blur-3xl hover:border-amber-500/20 transition-all rounded-sm group relative overflow-hidden">
+                    <div className="relative mb-12 flex items-center justify-start group">
+                      <motion.div initial={{ scale: 0, opacity: 0 }} whileHover={{ scale: [1, 1.2, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} className="absolute -inset-4 bg-amber-500/40 rounded-full blur-3xl pointer-events-none" />
+                      <motion.div className="text-6xl relative z-10 text-amber-500 transition-all duration-700 filter drop-shadow-[0_0_10px_rgba(245,158,11,0.3)] group-hover:drop-shadow-[0_0_30px_rgba(245,158,11,1)]">
+                        {feat.icon}
+                      </motion.div>
+                    </div>
+                    <h3 className="text-sm font-bold tracking-[0.4em] uppercase mb-6 text-white/80">{feat.title}</h3>
+                    <p className="text-[11px] leading-loose text-white/30 uppercase tracking-widest">{feat.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -270,8 +296,18 @@ export default function DeskMateProject() {
                    <p className="text-2xl tracking-[0.4em] text-amber-500">Streamlit ∙ Python ∙ NLP Logic</p>
                 </div>
                 <div className="flex flex-wrap justify-center gap-10">
-                  <a href="#" className="px-16 py-8 bg-white text-black hover:bg-amber-500 font-black uppercase tracking-[0.4em] text-[12px] transition-all duration-500 rounded-sm">Try DeskMate</a>
-                  <a href="#" className="px-16 py-8 border border-white/10 text-white hover:border-amber-500 hover:bg-white/5 font-bold uppercase tracking-[0.4em] text-[12px] transition-all duration-500 rounded-sm">View Engine</a>
+                  <button 
+                    onClick={() => {
+                      setShowNotification(true);
+                      setTimeout(() => setShowNotification(false), 3000);
+                    }}
+                    className="px-16 py-6 bg-white text-black hover:bg-amber-500 font-black uppercase tracking-[0.4em] text-[12px] transition-all duration-500 rounded-sm shadow-xl"
+                  >
+                    Try DeskMate
+                  </button>
+                  <a href="https://github.com/Meharsh7804/DeskMate" target="_blank" className="px-16 py-6 border border-white/10 text-white hover:border-amber-500 hover:bg-white/5 font-bold uppercase tracking-[0.4em] text-[12px] transition-all duration-500 rounded-sm flex items-center gap-3">
+                    <BsGithub className="text-lg" /> View Engine
+                  </a>
                 </div>
                 <Link href="/" className="text-[10px] uppercase tracking-[1em] text-white/20 hover:text-white transition-all flex items-center gap-6">
                   <span className="text-xl">←</span> BACK TO SHOWCASE
@@ -281,6 +317,20 @@ export default function DeskMateProject() {
           </motion.div>
         )}
 
+      </AnimatePresence>
+      {/* Coming Soon Notification */}
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div 
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 bg-amber-500 text-black font-bold uppercase tracking-[0.2em] text-[10px] rounded-full flex items-center gap-4"
+          >
+            <BsCpu className="text-lg animate-spin" />
+            Deployment in Progress... Stay Tuned!
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

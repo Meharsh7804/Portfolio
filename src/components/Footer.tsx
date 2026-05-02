@@ -11,13 +11,13 @@ export default function Footer() {
           
           <div className="text-center md:text-left">
             <p className="movie-title text-2xl text-white tracking-[0.2em]">{isChaos ? 'SYSTEM OVERRIDE' : 'MEHARSH'}</p>
-            <p className="text-[9px] uppercase tracking-[0.4em] text-white/20 mt-2">{isChaos ? '© 2024 / Destroyed & Rebuilt' : '© 2024 / Directed & Developed'}</p>
+            <p className="text-[9px] uppercase tracking-[0.4em] text-white/20 mt-2">{isChaos ? '© 2026 / Destroyed & Rebuilt' : '© 2026 / Directed & Developed'}</p>
           </div>
 
           <div className="flex gap-8">
-            <a href="#" className="text-[9px] font-bold tracking-[0.3em] text-white/30 hover:text-amber-500 transition-colors uppercase">Instagram</a>
-            <a href="#" className="text-[9px] font-bold tracking-[0.3em] text-white/30 hover:text-amber-500 transition-colors uppercase">LinkedIn</a>
-            <a href="#" className="text-[9px] font-bold tracking-[0.3em] text-white/30 hover:text-amber-500 transition-colors uppercase">GitHub</a>
+            <a href="https://www.instagram.com/_meharssh/" className="text-[9px] font-bold tracking-[0.3em] text-white/30 hover:text-amber-500 transition-colors uppercase">Instagram</a>
+            <a href="https://www.linkedin.com/in/meharsh-chandure/" className="text-[9px] font-bold tracking-[0.3em] text-white/30 hover:text-amber-500 transition-colors uppercase">LinkedIn</a>
+            <a href="https://github.com/Meharsh7804" className="text-[9px] font-bold tracking-[0.3em] text-white/30 hover:text-amber-500 transition-colors uppercase">GitHub</a>
           </div>
 
           <div className="flex flex-col items-center md:items-end">

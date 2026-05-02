@@ -180,7 +180,7 @@ export default function Hero() {
               }
             }}
           >
-            <h1 className="movie-title text-5xl md:text-[8vw] lg:text-[10vw] font-bold text-white mt-2 relative drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] flex justify-center">
+            <h1 className="movie-title text-4xl sm:text-5xl md:text-[8vw] lg:text-[10vw] font-bold text-white mt-2 relative drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] flex justify-center flex-wrap max-w-[90vw] mx-auto">
               {(isChaos ? "SYSTEM FAILURE" : "MEHARSH CHANDURE").split("").map((char, index) => (
                 <motion.span
                   key={index}
@@ -189,7 +189,7 @@ export default function Hero() {
                     visible: { opacity: 1, x: 0, filter: "blur(0px)" }
                   }}
                   transition={{ duration: 2.5, ease: [0.23, 1, 0.32, 1] }}
-                  className={char === " " ? "w-[3vw]" : "inline-block"}
+                  className={char === " " ? "w-[3vw] md:w-[2vw]" : "inline-block"}
                 >
                   {char}
                 </motion.span>
@@ -225,14 +225,19 @@ export default function Hero() {
                   </motion.button>
                 </Link>
                 
-                <motion.button
-                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-16 py-5 border border-white/20 text-white text-[11px] font-bold uppercase tracking-[0.4em] rounded-sm transition-all backdrop-blur-md"
-                >
-                  {isChaos ? 'Enter The Void' : 'Enter My World'}
+                <Link href="#neural-scan" className="block">
+                  <motion.button
+                    whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById('neural-scan')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="px-16 py-5 border border-white/20 text-white text-[11px] font-bold uppercase tracking-[0.4em] rounded-sm transition-all backdrop-blur-md"
+                  >
+                    {isChaos ? 'What do you want?' : 'Know Me'}
                 </motion.button>
+                </Link>
 
               </motion.div>
             )}

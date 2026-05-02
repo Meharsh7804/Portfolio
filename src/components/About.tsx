@@ -117,21 +117,21 @@ function LiveCodeStream({ booted }: { booted: boolean }) {
   }, [codeText, isDeleting, snippetIndex, booted]);
 
   return (
-    <div className="p-6 border border-amber-500/20 bg-black/40 backdrop-blur-md rounded-lg shadow-[0_0_30px_rgba(245,158,11,0.05)] relative overflow-hidden h-64 w-full transform -translate-x-20 -translate-y-20">
+    <div className="p-4 border border-amber-500/20 bg-black/40 backdrop-blur-md rounded-lg shadow-[0_0_30px_rgba(245,158,11,0.05)] relative overflow-hidden h-48 w-72 transform -translate-x-12 -translate-y-8 will-change-transform">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-amber-500/40" />
-      <div className="flex items-center gap-2 mb-4 opacity-50">
-        <div className="w-2 h-2 rounded-full bg-red-500"></div>
-        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-        <div className="w-2 h-2 rounded-full bg-green-500"></div>
-        <span className="ml-2 text-xs uppercase tracking-widest text-amber-500 font-bold">Runtime Engine</span>
+      <div className="flex items-center gap-2 mb-3 opacity-50">
+        <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+        <div className="w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
+        <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+        <span className="ml-2 text-[9px] uppercase tracking-widest text-amber-500 font-bold">Runtime Engine</span>
       </div>
       
-      <pre className="text-[11px] md:text-xs text-amber-500/70 leading-relaxed font-mono whitespace-pre-wrap break-words">
+      <pre className="text-[10px] text-amber-500/70 leading-relaxed font-mono whitespace-pre-wrap">
         {codeText}
         <motion.span 
           animate={{ opacity: [1, 0] }} 
           transition={{ duration: 0.8, repeat: Infinity }}
-          className="inline-block w-2 h-4 bg-amber-500 align-middle ml-1"
+          className="inline-block w-1.5 h-3 bg-amber-500 align-middle ml-1"
         />
       </pre>
     </div>
@@ -156,20 +156,20 @@ function SystemLogsPanel({ booted }: { booted: boolean }) {
   }, [booted]);
 
   return (
-    <div className="p-6 border border-white/10 bg-black/50 backdrop-blur-md rounded-lg h-64 flex flex-col justify-end overflow-hidden relative shadow-[0_0_30px_rgba(245,158,11,0.05)] transform -translate-x-20 translate-y-20">
-      <div className="absolute top-4 left-6 text-xs text-amber-500/50 uppercase tracking-[0.3em] font-bold">System Log</div>
-      <div className="space-y-4 mt-8">
+    <div className="p-4 border border-white/10 bg-black/50 backdrop-blur-md rounded-lg h-48 w-72 flex flex-col justify-end overflow-hidden relative shadow-[0_0_30px_rgba(245,158,11,0.05)] transform -translate-x-12 translate-y-8 will-change-transform">
+      <div className="absolute top-3 left-4 text-[9px] text-amber-500/50 uppercase tracking-[0.3em] font-bold">System Log</div>
+      <div className="space-y-2 mt-6">
         {logs.map((log, index) => (
           <motion.div 
             key={log + index}
-            initial={{ opacity: 0, x: -10 }}
+            initial={{ opacity: 0, x: -5 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-base text-amber-500/80 flex items-center gap-3 tracking-wide"
+            className="text-[11px] text-amber-500/80 flex font-mono items-center gap-2 tracking-wide"
           >
-            <span className="text-white/30">{`>`}</span> {log}
+            <span className="text-white/20">{`>`}</span> {log}
           </motion.div>
         ))}
-        {!booted && <div className="text-base text-white/50 animate-pulse tracking-wide">{`> Awaiting boot...`}</div>}
+        {!booted && <div className="text-[11px] font-mono text-white/40 animate-pulse tracking-wide">{`> Awaiting boot...`}</div>}
       </div>
     </div>
   );
@@ -274,7 +274,7 @@ export default function About() {
         )}
       </AnimatePresence>
 
-      <div className="max-w-7xl mx-auto w-full relative z-10 p-8 grid grid-cols-1 lg:grid-cols-3 gap-12 items-center h-full pt-40">
+      <div className="max-w-7xl mx-auto w-full relative z-10 pl-8 pr-12 lg:pr-24 grid grid-cols-1 lg:grid-cols-3 gap-12 items-center h-full pt-40">
         
         {/* Section Heading */}
         <div className="absolute top-16 left-0 right-0 text-center z-50 pointer-events-none">
@@ -284,39 +284,35 @@ export default function About() {
             transition={{ duration: 1, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <span className="text-xs uppercase tracking-[0.6em] text-amber-500 mb-4 block font-bold font-sans">
+            <span className="text-xs uppercase tracking-[0.6em] text-amber-500 mb-4 block font-bold font-sans drop-shadow-lg">
               {isChaos ? 'Module 00' : 'Module 02'}
             </span>
             <h2 className="movie-title text-5xl md:text-7xl text-white tracking-widest uppercase">
-              {isChaos ? 'Memory ' : 'Neural '}<span className="text-amber-500">{isChaos ? 'Leak' : 'Scan'}</span>
+              {isChaos ? 'Memory ' : 'What I Think '}<span className="text-amber-500">{isChaos ? 'Leak' : 'I Know'}</span>
             </h2>
           </motion.div>
         </div>
 
         {/* Left: Interactive Code Stream & Terminal Logs */}
         <div className="hidden lg:flex flex-col h-full justify-between pb-20 pt-10 relative">
-          
-          {/* Live Code Stream Panel (Top Left) */}
           <LiveCodeStream booted={booted} />
-
-          {/* System Logs Panel (Bottom Left) */}
           <SystemLogsPanel booted={booted} />
         </div>
 
         {/* Center: Neural Core System */}
-        <div className="relative h-[500px] md:h-[700px] flex items-center justify-center col-span-1">
+        <div className="relative h-[500px] md:h-[700px] flex items-center justify-center col-span-1 lg:-translate-x-12">
           {booted && (
             <>
               {/* Outer Rings */}
               <motion.div 
                 animate={{ rotate: overload ? 360 : 360 }}
                 transition={{ duration: overload ? 2 : 25, repeat: Infinity, ease: "linear" }}
-                className="absolute w-[400px] h-[400px] md:w-[550px] md:h-[550px] rounded-full border border-white/5 border-dashed"
+                className="absolute w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[550px] lg:h-[550px] rounded-full border border-white/5 border-dashed"
               />
               <motion.div 
                 animate={{ rotate: overload ? -360 : -360 }}
                 transition={{ duration: overload ? 3 : 35, repeat: Infinity, ease: "linear" }}
-                className="absolute w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full border border-amber-500/10"
+                className="absolute w-[220px] h-[220px] md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[400px] rounded-full border border-amber-500/10"
               />
 
               {/* Glowing Core */}
@@ -347,7 +343,9 @@ export default function About() {
                 const isHovered = activeNode === node.id;
                 
                 // Adjust distance for smaller screens
-                const distMultiplier = typeof window !== 'undefined' && window.innerWidth < 768 ? 0.6 : 1;
+                const isMobile = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
+                const isSmallMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+                const distMultiplier = isSmallMobile ? 0.6 : (isMobile ? 0.75 : 1);
                 const currentDist = node.distance * distMultiplier;
 
                 return (
@@ -359,7 +357,13 @@ export default function About() {
                       x: Math.cos(rad) * currentDist, 
                       y: Math.sin(rad) * currentDist,
                     }}
-                    transition={{ delay: i * 0.2, type: "spring", stiffness: 50 }}
+                    transition={{ 
+                      delay: i * 0.1, 
+                      type: "spring", 
+                      stiffness: 100, 
+                      damping: 15,
+                      mass: 0.8
+                    }}
                     className="absolute z-30"
                   >
                     <motion.button
@@ -380,7 +384,7 @@ export default function About() {
                     <svg className="absolute top-1/2 left-1/2 -z-10 pointer-events-none" style={{ overflow: 'visible' }}>
                       <motion.line 
                         x1="0" y1="0" 
-                        x2={-Math.cos(rad) * currentDist} y2={-Math.sin(rad) * currentDist} 
+                        x2={-Math.cos(rad) * (currentDist - 64)} y2={-Math.sin(rad) * (currentDist - 64)} 
                         stroke={isHovered ? 'rgba(245,158,11,0.6)' : 'rgba(255,255,255,0.15)'} 
                         strokeWidth={isHovered ? "3" : "1"}
                         strokeDasharray={isHovered ? "0" : "4 4"}
@@ -394,7 +398,7 @@ export default function About() {
         </div>
 
         {/* Right: Active Node Data Panel */}
-        <div className="flex flex-col h-full justify-center lg:translate-x-20">
+        <div className="flex flex-col h-auto lg:h-full w-full lg:w-[25vw] justify-center lg:translate-x-16 mt-8 lg:mt-0 z-50">
           <AnimatePresence mode="wait">
             {activeNode ? (
               <motion.div
@@ -404,15 +408,9 @@ export default function About() {
                 exit={{ opacity: 0, x: -20 }}
                 className="p-8 border border-amber-500/30 bg-black/60 backdrop-blur-xl rounded-xl shadow-[0_0_40px_rgba(245,158,11,0.15)] relative overflow-hidden"
               >
-                {/* Scanner line effect */}
-                <motion.div 
-                  className="absolute left-0 right-0 h-[2px] bg-amber-500/50"
-                  animate={{ top: ['0%', '100%', '0%'] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                />
 
-                <h3 className="text-3xl font-black text-amber-500 tracking-[0.2em] uppercase mb-4">
-                  MODULE: {activeNode}
+                <h3 className="text-3xl font-black text-amber-500 tracking-[0.2em] uppercase mb-2">
+                  Domain: {activeNode}
                 </h3>
                 <p className="text-sm text-white/70 leading-relaxed mb-8">
                   {SKILLS_DATA[activeNode].desc}
@@ -454,7 +452,7 @@ export default function About() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full flex items-center justify-center"
+                className="h-full min-h-[300px] flex items-center justify-center"
               >
                 <div className="text-center space-y-6">
                   <div className="w-16 h-16 border border-white/10 rounded-full flex items-center justify-center mx-auto bg-white/5">

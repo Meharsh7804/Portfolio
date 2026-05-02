@@ -150,6 +150,7 @@ export default function DesignTunnel() {
                 src={selectedDesign} 
                 alt="Selected UI Design" 
                 fill 
+                sizes="(max-width: 768px) 95vw, (max-width: 1200px) 80vw, 1200px"
                 className="object-contain"
                 priority
               />

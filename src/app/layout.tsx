@@ -3,12 +3,11 @@ import "./globals.css";
 import CustomCursor from "@/components/ui/CustomCursor";
 import { ChaosProvider } from "@/context/ChaosContext";
 import PageTransition from "@/components/PageTransition";
-
 export const metadata: Metadata = {
-  title: "Meharsh — Cinematic Developer & Storyteller",
+  title: "Portfolio — Meharsh's Cut",
   description:
-    "A blend of code, cricket, and soulful stories. A cinematic portfolio experience.",
-  keywords: ["developer", "portfolio", "cinematic", "storytelling", "cricket", "music"],
+    "A cinematic portfolio experience.",
+  keywords: ["developer", "portfolio", "cinematic", "storytelling"],
 };
 
 export default function RootLayout({
@@ -30,7 +29,6 @@ export default function RootLayout({
         <ChaosProvider>
           <div className="film-grain" />
           <div className="vignette" />
-          <CustomCursor />
           <PageTransition>
             {children}
           </PageTransition>

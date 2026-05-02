@@ -244,12 +244,15 @@ function Structure({ onComplete, mousePos, winSize }: { onComplete: () => void; 
   };
 
   // Predefine Hexagon coordinates relative to screen center
-  const radius = 180;
+  // Ensure radius scales down on screens with short height (like laptops) to prevent text overlap
+  const radius = Math.min(180, winSize.h * 0.25, winSize.w * 0.3);
+  const centerY = winSize.h / 2 + (winSize.h < 800 ? 50 : 0);
+
   const predefinedNodes = Array.from({ length: requiredNodes }).map((_, i) => {
     const angle = (i / requiredNodes) * Math.PI * 2 - Math.PI / 2; // start from top
     return {
       x: Math.cos(angle) * radius + winSize.w / 2,
-      y: Math.sin(angle) * radius + winSize.h / 2
+      y: Math.sin(angle) * radius + centerY
     };
   });
 
@@ -261,7 +264,7 @@ function Structure({ onComplete, mousePos, winSize }: { onComplete: () => void; 
       className="absolute inset-0 cursor-crosshair z-20"
       onClick={handleClick}
     >
-      <div className="absolute bottom-20 left-0 right-0 text-center pointer-events-none">
+      <div className="absolute top-20 left-0 right-0 text-center pointer-events-none">
         <motion.h3 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="movie-title text-3xl text-[var(--accent-cricket)] opacity-80">
           Act II: Architecture
         </motion.h3>
@@ -346,10 +349,10 @@ function Synthesis({ onComplete, mousePos, winSize }: { onComplete: () => void; 
                initial={{ opacity: 0, y: 200, z: -500 }} 
                animate={{ opacity: 1, y: 0, z: -200 }} 
                transition={{ duration: 0.5 }} 
-               className="absolute left-1/4 top-1/4 w-[500px] h-[300px] cinematic-card p-8 border-l-4 border-l-[var(--accent-cool)]"
+               className="absolute left-[5%] md:left-1/4 top-1/3 w-[90%] md:w-[500px] h-[200px] md:h-[300px] cinematic-card p-6 md:p-8 border-l-4 border-l-[var(--accent-cool)]"
              >
-                <div className="h-6 w-1/3 bg-[var(--accent-cool)] opacity-20 mb-6" />
-                <div className="flex gap-4 h-32">
+                <div className="h-4 md:h-6 w-1/3 bg-[var(--accent-cool)] opacity-20 mb-6" />
+                <div className="flex gap-4 h-20 md:h-32">
                   <div className="flex-1 bg-[var(--text-dim)] opacity-10 rounded-sm" />
                   <div className="flex-1 bg-[var(--text-dim)] opacity-10 rounded-sm" />
                   <div className="flex-1 bg-[var(--accent-cool)] opacity-30 shadow-[0_0_30px_var(--accent-cool)] rounded-sm" />
@@ -362,9 +365,9 @@ function Synthesis({ onComplete, mousePos, winSize }: { onComplete: () => void; 
                initial={{ opacity: 0, x: -300, z: 200 }} 
                animate={{ opacity: 1, x: 0, z: 100 }} 
                transition={{ duration: 0.5 }} 
-               className="absolute right-1/4 top-10 w-[300px] h-[400px] cinematic-card p-8 border-t-4 border-t-[var(--accent-cool)]"
+               className="absolute right-[5%] md:right-1/4 top-[10%] md:top-1/4 w-[90%] md:w-[300px] h-[250px] md:h-[400px] cinematic-card p-6 md:p-8 border-t-4 border-t-[var(--accent-cool)]"
              >
-                <svg className="w-full h-40 opacity-50" viewBox="0 0 100 50">
+                <svg className="w-full h-32 md:h-40 opacity-50" viewBox="0 0 100 50">
                   <path d="M0,50 L20,30 L40,40 L60,10 L80,20 L100,0" fill="none" stroke="var(--accent-cool)" strokeWidth="2" />
                   <path d="M0,50 L20,30 L40,40 L60,10 L80,20 L100,0 L100,50 L0,50 Z" fill="var(--accent-cool)" opacity="0.1" />
                 </svg>
@@ -381,12 +384,12 @@ function Synthesis({ onComplete, mousePos, winSize }: { onComplete: () => void; 
                initial={{ opacity: 0, scale: 0, z: 500 }} 
                animate={{ opacity: 1, scale: 1, z: 300 }} 
                transition={{ duration: 0.5 }} 
-               className="absolute left-[40%] top-1/3 w-[400px] h-[200px] cinematic-card p-6 border border-[var(--accent-cool)] flex items-center gap-6 shadow-[0_0_50px_rgba(6,182,212,0.2)]"
+               className="absolute left-[5%] md:left-[40%] top-1/2 w-[90%] md:w-[400px] h-[160px] md:h-[200px] cinematic-card p-4 md:p-6 border border-[var(--accent-cool)] flex items-center gap-4 md:gap-6 shadow-[0_0_50px_rgba(6,182,212,0.2)]"
              >
-                <div className="w-24 h-24 rounded-full border-4 border-dashed border-[var(--accent-cool)] animate-[spin_10s_linear_infinite] flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-[var(--accent-cool)] opacity-20" />
+                <div className="w-16 h-16 md:w-24 md:h-24 rounded-full border-4 border-dashed border-[var(--accent-cool)] animate-[spin_10s_linear_infinite] flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 md:w-16 md:h-16 rounded-full bg-[var(--accent-cool)] opacity-20" />
                 </div>
-                <div className="flex-1 space-y-3">
+                <div className="flex-1 space-y-3 w-full">
                    <div className="h-4 w-1/2 bg-[var(--accent-cool)]" />
                    <div className="h-2 w-full bg-white opacity-20" />
                    <div className="h-2 w-3/4 bg-white opacity-20" />
@@ -518,7 +521,7 @@ function Epilogue({ onReset }: { onReset: () => void }) {
     >
       <div className="space-y-8 max-w-4xl px-6 relative z-10 pointer-events-none">
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1.5 }} className="text-soulful text-2xl md:text-3xl text-[var(--text-dim)] italic">
-          "Great engineering is not just logic. <br className="hidden md:block"/> It is poetry written in the architecture of systems."
+          “Good code works. <br className="hidden md:block"/> Great engineering feels.”
         </motion.p>
         <motion.h1 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.5, duration: 1.5 }} className="movie-title text-5xl md:text-7xl text-[var(--text-main)] drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
           Let's build something <span className="text-[var(--accent-warm)]">unforgettable.</span>

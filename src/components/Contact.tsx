@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BsGithub, BsLinkedin, BsTwitter } from 'react-icons/bs';
+import { BsGithub, BsLinkedin, BsInstagram } from 'react-icons/bs';
 import { useChaos } from '@/context/ChaosContext';
 
 export default function Contact() {
@@ -18,7 +18,7 @@ export default function Contact() {
     const resetTimer = () => {
       setIsInactive(false);
       clearTimeout(timeout);
-      timeout = setTimeout(() => setIsInactive(true), 8000);
+      timeout = setTimeout(() => setIsInactive(true), 10000);
     };
 
     window.addEventListener('mousemove', resetTimer);
@@ -32,14 +32,32 @@ export default function Contact() {
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (formState !== 'idle') return;
     
     setFormState('transmitting');
-    setTimeout(() => {
-      setFormState('success');
-    }, 2500);
+
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('https://formspree.io/f/meenqylq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setFormState('success');
+      } else {
+        throw new Error('Failed to transmit');
+      }
+    } catch (error) {
+      console.error(error);
+      setFormState('idle');
+      alert("Transmission failed. Please try again.");
+    }
   };
 
   // Background glow intensity based on typing length (subtle effect)
@@ -80,116 +98,111 @@ export default function Contact() {
         </motion.div>
 
         {/* Interactive Form */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="w-full relative z-20"
-        >
-          {formState === 'success' ? (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-center py-20 border border-white/5 bg-white/[0.02] backdrop-blur-md rounded-xl shadow-[0_0_50px_rgba(245,158,11,0.05)]"
-            >
-              <h3 className="text-2xl md:text-3xl text-amber-500 tracking-[0.3em] uppercase font-light mb-4">Message Received.</h3>
-              <p className="text-white/40 tracking-widest uppercase text-xs md:text-sm font-mono">See you in the next build.</p>
-            </motion.div>
-          ) : (
-            <form 
-              onSubmit={handleSubmit}
-              className={`relative mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isExpanded ? 'max-w-xl' : 'max-w-md'}`}
-            >
-              <AnimatePresence>
-                {!isExpanded && (
-                  <motion.div 
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                  >
-                    <span className="text-white/30 tracking-widest uppercase text-sm animate-pulse">Say something...</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
+        <div className="w-full relative z-20">
+          <AnimatePresence mode="wait">
+            {formState === 'success' ? (
               <motion.div 
-                layout
-                onClick={() => !isExpanded && setIsExpanded(true)}
-                className={`border bg-black/40 backdrop-blur-xl rounded-xl overflow-hidden transition-all duration-500 ${isExpanded ? 'p-8 md:p-10 border-white/20 shadow-[0_0_50px_rgba(255,255,255,0.05)]' : 'p-4 md:p-5 border-white/10 cursor-text hover:border-white/30 hover:bg-white/[0.05]'}`}
+                key="success"
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="text-center py-16 border border-white/5 bg-white/[0.02] backdrop-blur-md rounded-xl shadow-[0_0_50px_rgba(245,158,11,0.05)]"
               >
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
-                      className="space-y-8 mb-8"
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="relative group">
-                          <input 
-                            type="text" 
-                            required
-                            placeholder="NAME" 
-                            className="w-full bg-transparent border-b border-white/10 pb-2 text-white text-xs md:text-sm tracking-widest placeholder-white/20 focus:border-amber-500 focus:outline-none transition-colors"
-                          />
-                        </div>
-                        <div className="relative group">
-                          <input 
-                            type="email" 
-                            required
-                            placeholder="EMAIL" 
-                            className="w-full bg-transparent border-b border-white/10 pb-2 text-white text-xs md:text-sm tracking-widest placeholder-white/20 focus:border-amber-500 focus:outline-none transition-colors"
-                          />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <textarea
-                  value={typingText}
-                  onChange={(e) => {
-                    setTypingText(e.target.value);
-                    if (!isExpanded && e.target.value.length > 0) setIsExpanded(true);
-                  }}
-                  onFocus={() => !isExpanded && setIsExpanded(true)}
-                  placeholder={isExpanded ? "YOUR MESSAGE..." : ""}
-                  rows={isExpanded ? 4 : 1}
-                  className={`w-full bg-transparent text-white tracking-widest focus:outline-none transition-all resize-none placeholder-white/20 ${isExpanded ? 'text-xs md:text-sm leading-relaxed' : 'text-center text-xs md:text-sm'}`}
-                  style={{ minHeight: isExpanded ? '100px' : '24px' }}
-                />
-
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="mt-8 flex justify-end"
-                    >
-                      <button 
-                        disabled={formState === 'transmitting' || typingText.length === 0}
-                        className={`group relative overflow-hidden px-8 py-4 bg-white text-black font-bold tracking-widest uppercase text-[10px] md:text-xs rounded-sm transition-all ${formState === 'transmitting' ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-500 hover:text-black hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:scale-105'}`}
-                      >
-                        <span className="relative z-10 flex items-center gap-2">
-                          {formState === 'transmitting' ? (
-                            <>
-                              Transmitting <span className="flex gap-1"><span className="animate-bounce">.</span><span className="animate-bounce delay-75">.</span><span className="animate-bounce delay-150">.</span></span>
-                            </>
-                          ) : (
-                            'Send Transmission'
-                          )}
-                        </span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <h3 className="text-2xl md:text-3xl text-amber-500 tracking-[0.3em] uppercase font-light mb-4">Message Received.</h3>
+                <p className="text-white/40 tracking-widest uppercase text-xs md:text-sm font-mono">See you in the next build.</p>
               </motion.div>
-            </form>
-          )}
-        </motion.div>
+            ) : (
+              <motion.form 
+                key="form"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                onSubmit={handleSubmit}
+                className={`relative mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isExpanded ? 'max-w-xl' : 'max-w-md'}`}
+              >
+                <div 
+                  onClick={() => !isExpanded && setIsExpanded(true)}
+                  className={`border bg-black/40 backdrop-blur-xl rounded-xl overflow-hidden transition-all duration-500 ${isExpanded ? 'p-8 md:p-10 border-white/20 shadow-[0_0_50px_rgba(255,255,255,0.05)]' : 'p-4 md:p-5 border-white/10 cursor-text hover:border-white/30 hover:bg-white/[0.05]'}`}
+                >
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className="space-y-6 mb-8"
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="relative">
+                            <input 
+                              type="text" 
+                              name="name"
+                              required
+                              placeholder="NAME" 
+                              className="w-full bg-transparent border-b border-white/10 pb-2 text-white text-xs md:text-sm tracking-widest placeholder-white/20 focus:border-amber-500 focus:outline-none transition-colors"
+                            />
+                          </div>
+                          <div className="relative">
+                            <input 
+                              type="email" 
+                              name="email"
+                              required
+                              placeholder="EMAIL" 
+                              className="w-full bg-transparent border-b border-white/10 pb-2 text-white text-xs md:text-sm tracking-widest placeholder-white/20 focus:border-amber-500 focus:outline-none transition-colors"
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <textarea
+                    name="message"
+                    value={typingText}
+                    onChange={(e) => {
+                      setTypingText(e.target.value);
+                      if (!isExpanded && e.target.value.length > 0) setIsExpanded(true);
+                    }}
+                    onFocus={() => !isExpanded && setIsExpanded(true)}
+                    placeholder={isExpanded ? "YOUR MESSAGE..." : "SAY SOMETHING..."}
+                    rows={isExpanded ? 4 : 1}
+                    className={`w-full bg-transparent text-white tracking-widest focus:outline-none transition-all resize-none placeholder-white/40 ${isExpanded ? 'text-xs md:text-sm leading-relaxed' : 'text-center text-xs md:text-sm'}`}
+                    style={{ minHeight: isExpanded ? '100px' : '24px' }}
+                  />
+
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ delay: 0.1 }}
+                        className="mt-8 flex justify-end"
+                      >
+                        <button 
+                          disabled={formState === 'transmitting' || typingText.length === 0}
+                          className={`group relative overflow-hidden px-8 py-4 bg-white text-black font-bold tracking-widest uppercase text-[10px] md:text-xs rounded-sm transition-all ${formState === 'transmitting' ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-500 hover:text-black hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:scale-105'}`}
+                        >
+                          <span className="relative z-10 flex items-center gap-2">
+                            {formState === 'transmitting' ? (
+                              <>
+                                Transmitting <span className="flex gap-1"><span className="animate-bounce">.</span><span className="animate-bounce delay-75">.</span><span className="animate-bounce delay-150">.</span></span>
+                              </>
+                            ) : (
+                              'Send Transmission'
+                            )}
+                          </span>
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.form>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Witty Personal Microcopy */}
         <motion.div 
@@ -209,10 +222,16 @@ export default function Contact() {
 
         {/* Orbiting / Floating Social Links */}
         <div className="flex gap-8 mt-16 relative z-10">
-          {[BsGithub, BsLinkedin, BsTwitter].map((Icon, i) => (
+          {[
+            { Icon: BsGithub, href: 'https://github.com/Meharsh7804' },
+            { Icon: BsLinkedin, href: 'https://www.linkedin.com/in/meharsh-chandure/' },
+            { Icon: BsInstagram, href: 'https://www.instagram.com/_meharssh/' }
+          ].map((social, i) => (
             <motion.a
               key={i}
-              href="#"
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
               animate={{
                 y: [0, -8, 0],
               }}
@@ -225,7 +244,7 @@ export default function Contact() {
               whileHover={{ scale: 1.2, y: -5, transition: { duration: 0.2 } }}
               className="text-white/40 hover:text-amber-500 transition-colors drop-shadow-[0_0_15px_rgba(245,158,11,0)] hover:drop-shadow-[0_0_15px_rgba(245,158,11,0.8)]"
             >
-              <Icon className="text-2xl md:text-3xl" />
+              <social.Icon className="text-2xl md:text-3xl" />
             </motion.a>
           ))}
         </div>
