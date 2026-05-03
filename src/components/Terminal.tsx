@@ -11,7 +11,7 @@ type HistoryEntry = {
 };
 
 // --- DATA ARRAYS ---
-const COMMANDS = ['help', 'about', 'skills', 'projects', 'contact', 'clear', 'dsa', 'coffee', 'sudo', 'vibe', 'joke', 'motivation', 'filmy', 'random', 'roast', 'secret'];
+const COMMANDS = ['help', 'about', 'skills', 'projects', 'contact', 'cd', 'clear', 'dsa', 'coffee', 'sudo', 'vibe', 'joke', 'motivation', 'filmy', 'random', 'roast', 'secret'];
 
 const VIBES = ["lowkey productive, highkey confused", "running on chai and bad decisions", "debugging life since 2003", "powered by anxiety and lofi beats", "in my 'it works on my machine' era"];
 const JOKES = ["Why do programmers hate nature? Too many bugs.", "I fixed a bug... it created 3 more. Classic.", "How many programmers does it take to change a light bulb? None, that's a hardware problem.", "Hardware: The part of a computer you can kick."];
@@ -166,6 +166,7 @@ export default function Terminal() {
               <li><span className="text-green-400 w-28 inline-block">roast</span>    - Self inflicted damage</li>
               <li><span className="text-green-400 w-28 inline-block">motivation</span> - Because debugging is hard</li>
               <li><span className="text-purple-400 w-28 inline-block">random</span>   - Roll the dice</li>
+              <li><span className="text-purple-400 w-28 inline-block">cd</span>       - Change directory</li>
               <li><span className="text-purple-400 w-28 inline-block">clear</span>    - Wipe terminal</li>
             </motion.ul>
           );
@@ -225,6 +226,16 @@ export default function Terminal() {
           break;
         case 'sudo':
           outputNode = <div className="text-red-500 py-2 font-black"><Typewriter text="Nice try. This incident will be reported." speed={50}/></div>;
+          break;
+        case 'cd #contact':
+        case 'cd contact':
+          outputNode = <div className="text-green-400 py-2"><Typewriter text="Establishing secure connection to contact module... Access granted." /></div>;
+          setTimeout(() => {
+            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+          }, 1000);
+          break;
+        case 'cd':
+          outputNode = <div className="text-white/60 py-2"><Typewriter text="Usage: cd [directory]. Try 'cd #contact'" /></div>;
           break;
         default:
           outputNode = <div className="text-red-400 py-2"><Typewriter text={`Command not found: ${trimmed}. Try 'help'`} /></div>;
